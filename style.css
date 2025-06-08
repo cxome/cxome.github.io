@@ -1,0 +1,483 @@
+/* === Global Reset === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  cursor: none;
+}
+
+html, body {
+  height: 100%;
+  background-color: #000;
+  font-family: 'Orbitron', sans-serif;
+  overflow: hidden;
+}
+
+main {
+  height: 100vh;
+  width: 100vw;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+main::-webkit-scrollbar {
+  display: none;
+}
+
+main > * {
+  scroll-snap-align: start;
+}
+
+/* === Fade Overlay for Again Button === */
+.fade-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.8s ease-in-out;
+}
+
+.fade-overlay.fade-in {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* === Intro Section === */
+.intro-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+  background: #000 url('grain-bg.jpeg') center/cover no-repeat;
+  animation: fadeInSection 2.5s ease-in-out forwards;
+}
+
+.intro-text {
+  font-size: 4vw;
+  letter-spacing: 0.7em;
+  color: white;
+  filter: blur(10px);
+  transform: scale(1.2);
+  animation: fadeInSharp 2s ease-out forwards;
+  z-index: 2;
+}
+
+.scroll-hint {
+  position: absolute;
+  top: calc(50% + 3.5vw);
+  font-size: 2vw;
+  letter-spacing: 0.3em;
+  color: white;
+  filter: blur(10px);
+  transform: scale(0.2);
+  animation: fadeInSharp 2s ease-out forwards, scrollHint 1.5s ease-in-out infinite alternate;
+  animation-delay: 1s;
+  transition: opacity 0.6s ease;
+  z-index: 2;
+}
+
+.intro-container.not-active .scroll-hint {
+  opacity: 0 !important;
+}
+
+.reflection {
+  position: absolute;
+  top: 50%;
+  transform: translateY(30%) scaleY(-1);
+  color: rgba(255, 255, 255, 0.1);
+  filter: blur(4px);
+  pointer-events: none;
+  animation: reflectFade 3s ease-out forwards;
+}
+
+/* === Sections === */
+.section {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.section-inner {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: scale(1.05);
+  opacity: 0;
+  transition: transform 1.2s ease-out, opacity 1.2s ease-out;
+}
+
+.section.active .section-inner {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.section-title {
+  font-size: 3vw;
+  color: white;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(40px);
+  filter: blur(10px);
+  transition: opacity 1s ease 0.5s, transform 1s ease 0.5s, filter 1s ease 0.5s;
+}
+
+.section.active .section-title {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0px);
+}
+
+/* === Background Zoom === */
+.bg-zoom {
+  background-size: 120%;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s ease;
+}
+.chrome {
+  background-image: url('chrome-texture-8k1.png');
+}
+
+.glass {
+  background-image: url('glass-texture-8k.png');
+}
+
+.dust {
+  background-image: url('dust-texture-8k.png');
+}
+
+.void {
+  background-image: url('void-texture-8k.png');
+}
+.bg-zoom.animate {
+  animation: zoomInBG 1.2s ease forwards;
+}
+
+.bg-zoom.stabilized {
+  background-size: 100% !important;
+}
+
+/* === Ending Section === */
+.ending {
+  display: flex;
+  flex-direction: row;
+  background: black;
+  overflow: hidden;
+  position: relative;
+}
+
+.ending-split {
+  width: 50%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.ending-text {
+  font-size: 2.5vw;
+  color: white;
+  letter-spacing: 0.15em;
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 1s ease;
+  transform: rotate(0deg) scale(1);
+  display: inline-block;
+}
+
+
+.left-text, .right-text {
+  animation-play-state: paused;
+}
+
+.ending.active .left-text {
+  animation: riseUp 1.5s ease-out forwards;
+  animation-delay: 0.5s;
+  animation-play-state: running;
+}
+
+.ending.active .right-text {
+  animation: fallDown 1.5s ease-out forwards;
+  animation-delay: 2s;
+  animation-play-state: running;
+}
+
+.again-wrapper {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  pointer-events: none;
+}
+
+.ending.active .again-wrapper {
+  animation: showAgain 1.2s ease forwards;
+  animation-delay: 4.6s;
+}
+
+.again-button {
+  padding: 0.8em 2.2em;
+  font-size: 1.2vw;
+  font-family: 'Orbitron', sans-serif;
+  color: white;
+  background: none;
+  border: 2px solid white;
+  border-radius: 50px;
+  cursor: pointer;
+  letter-spacing: 0.15em;
+  position: relative;
+  overflow: hidden;
+  transition: 0.4s ease;
+  z-index: 0;
+  transform: scale(1);
+}
+
+.again-button::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, #0fffc1, #8b54ff, #ff00c8, #00ffe7, #ff8f1f);
+  background-size: 400% 400%;
+  animation: neon-glow 6s ease infinite;
+  filter: blur(15px);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.again-button:hover::before {
+  opacity: 1;
+}
+
+.again-button:hover {
+  transform: scale(1.05);
+  border-color: #0fffc1;
+  color: #0fffc1;
+  box-shadow: 0 0 15px #0fffc1, 0 0 25px #8b54ff, 0 0 35px #ff00c8;
+}
+
+/* === Trail Dot === */
+.trail-dot {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(0, 255, 255, 0.8);
+  box-shadow: 0 0 8px #0ff, 0 0 16px #8b54ff, 0 0 24px #ff00c8;
+  pointer-events: none;
+  animation: fadeOutTrail 0.6s ease-out forwards;
+  z-index: 1;
+}
+/* === Again 카운터 스타일 === */
+.again-counter {
+  position: absolute;
+  top: 3%;
+  left: 3%;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2vw;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  z-index: 10;
+  
+  /* 초기 상태 (숨김) */
+  opacity: 0;
+  transform: translateY(-10px);
+  
+  /* 미묘한 글로우 효과 */
+  text-shadow: 0 0 10px rgba(15, 255, 193, 0.3);
+  
+  /* 반응형 최소 크기 */
+  min-width: 120px;
+}
+
+/* 카운터 페이드인 애니메이션 클래스 */
+.again-counter.counter-fade-in {
+  animation: counterFadeIn 1.2s ease-out forwards;
+  animation-delay: 0.5s;
+}
+
+/* 카운터 나타나는 애니메이션 */
+@keyframes counterFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-15px);
+    filter: blur(5px);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateY(-2px);
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+/* 카운터 업데이트 시 살짝 강조 효과 */
+.again-counter.updated {
+  animation: counterPulse 1.5s ease-out;
+}
+
+@keyframes counterPulse {
+  0% {
+    transform: scale(1);
+    text-shadow: 0 0 10px rgba(15, 255, 193, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    text-shadow: 0 0 15px rgba(15, 255, 193, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    text-shadow: 0 0 10px rgba(15, 255, 193, 0.3);
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .again-counter {
+    font-size: 2vw;
+    top: 5%;
+    left: 5%;
+  }
+}
+
+@media (max-width: 480px) {
+  .again-counter {
+    font-size: 4vw;
+  }
+}
+
+/* === Animations === */
+@keyframes fadeInSharp {
+  0% {
+    opacity: 0;
+    filter: blur(15px);
+    letter-spacing: 1em;
+    transform: scale(1.2);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(5px);
+    transform: scale(1);
+  }
+  100% {
+    filter: blur(0);
+    letter-spacing: 0.7em;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInSection {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoomInBG {
+  0% {
+    background-size: 120%;
+  }
+  100% {
+    background-size: 100%;
+  }
+}
+
+@keyframes reflectFade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes riseUp {
+  from {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fallDown {
+  from {
+    transform: translateY(-60px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes showAgain {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@keyframes neon-glow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 70% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes fadeOutTrail {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+
+@keyframes scrollHint {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    transform: scale(1) translateY(10px);
+  }
+}
