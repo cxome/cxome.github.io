@@ -1,15 +1,17 @@
 // === 랜덤 엔딩 텍스트 배열 ===
 const endingTexts = [
-  { left: "you've entered", right: "the space." },
-  { left: "you've felt", right: "beyond." },
-  { left: "this website...", right: "is amazing!" },
-  { left: "welcome to", right: "the void." },
-  { left: "reality has", right: "shifted." },
-  { left: "you're now", right: "awakened." },
-  { left: "the journey..", right: "continues." },
+  { left: "you've entered", right: "the space" },
+  { left: "you've felt", right: "beyond" },
+  { left: "this website", right: "is amazing" },
+  { left: "welcome to", right: "the void" },
+  { left: "reality has", right: "shifted" },
+  { left: "you're now", right: "awakened" },
+  { left: "the journey", right: "continues" },
   { left: "something", right: "has changed" },
-  { left: "lol", right: "how are you?" },
-  { left: "keep moving", right: "explorer." }
+  { left: "you found", right: "the secret" },
+  { left: "congratulations", right: "explorer" },
+  { left: "the matrix", right: "glitched" },
+  { left: "you transcended", right: "dimensions" }
 ];
 
 // === 현재 엔딩 텍스트 인덱스 ===
@@ -92,9 +94,15 @@ function resetAndAnimateCounter() {
 
 // === 애니메이션 초기화 함수 ===
 function resetAnimations() {
-  document.querySelectorAll('.section, .bg-zoom').forEach(el => {
+  document.querySelectorAll('.section').forEach(el => {
+    el.classList.remove('active');
+  });
+  
+  // bg-zoom 섹션들의 상태를 완전히 리셋하여 재애니메이션 가능하게 함
+  document.querySelectorAll('.bg-zoom').forEach(el => {
     el.classList.remove('active', 'stabilized', 'animate');
   });
+  
   const intro = document.querySelector('.intro-container');
   if (intro) intro.classList.remove('not-active');
 }
@@ -179,12 +187,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const id = target.id || target.dataset.section;
 
       if (entry.isIntersecting) {
-        if (target.classList.contains('bg-zoom') && !target.classList.contains('stabilized')) {
-          target.classList.add('animate');
-          setTimeout(() => {
-            target.classList.remove('animate');
-            target.classList.add('stabilized');
-          }, 1200);
+        // bg-zoom 애니메이션 로직 - stabilized 상태와 관계없이 항상 애니메이션 발동
+        if (target.classList.contains('bg-zoom')) {
+          // 이미 animate 중이 아닐 때만 애니메이션 시작
+          if (!target.classList.contains('animate')) {
+            target.classList.add('animate');
+            setTimeout(() => {
+              target.classList.remove('animate');
+              target.classList.add('stabilized');
+            }, 1200);
+          }
         }
 
         if (resetTimers.has(id)) {
@@ -196,6 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         target.classList.remove('active');
 
+        // 섹션을 벗어날 때 stabilized 상태 해제하여 다음 진입 시 재애니메이션 가능하게 함
         if (target.classList.contains('bg-zoom')) {
           const timer = setTimeout(() => {
             target.classList.remove('stabilized');
@@ -294,7 +307,16 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       fadeOverlay.classList.remove('fade-in');
       
+      // === 암전 해제 후 Observer 완전 재초기화 ===
       setTimeout(() => {
+        // 모든 bg-zoom 요소들이 새로 진입할 때 애니메이션이 발동되도록 강제 리셋
+        document.querySelectorAll('.bg-zoom').forEach(el => {
+          el.classList.remove('active', 'stabilized', 'animate');
+          // Observer 재등록으로 상태 초기화
+          observer.unobserve(el);
+          observer.observe(el);
+        });
+        
         fadeOverlay.remove();
       }, 1800);
     }, 2200);
