@@ -31,7 +31,6 @@ function updateEndingText() {
 
 // === 다음 랜덤 텍스트 선택 함수 ===
 function selectNextEndingText() {
-  // 현재 텍스트와 다른 텍스트를 랜덤하게 선택 (연속 중복 방지)
   let nextIndex;
   do {
     nextIndex = Math.floor(Math.random() * endingTexts.length);
@@ -40,23 +39,21 @@ function selectNextEndingText() {
   currentEndingIndex = nextIndex;
 }
 
-// === 상태 변수 ===
 let trailActive = false;
 let againClickCount = 0;
 let isFirstEndingEntry = true;
 
-// === 카운터 표시 함수 ===
 function createCounterDisplay() {
   const counterEl = document.createElement('div');
   counterEl.id = 'again-counter';
   counterEl.className = 'again-counter';
   counterEl.textContent = `Again: ${againClickCount}`;
-  
+
   const endingSection = document.getElementById('ending-section');
   if (endingSection) {
     endingSection.appendChild(counterEl);
   }
-  
+
   return counterEl;
 }
 
@@ -64,7 +61,6 @@ function updateCounter() {
   const counterEl = document.getElementById('again-counter');
   if (counterEl) {
     counterEl.textContent = `Again: ${againClickCount}`;
-    
     if (isFirstEndingEntry) {
       counterEl.classList.add('updated');
       setTimeout(() => {
@@ -75,39 +71,56 @@ function updateCounter() {
   }
 }
 
-// === 카운터 애니메이션 리셋 및 재실행 함수 ===
 function resetAndAnimateCounter() {
   const counterEl = document.getElementById('again-counter');
   if (counterEl) {
     counterEl.classList.remove('counter-fade-in');
     counterEl.offsetHeight;
-    
     counterEl.style.opacity = '0';
     counterEl.style.transform = 'translateY(-15px)';
     counterEl.style.filter = 'blur(5px)';
-    
     requestAnimationFrame(() => {
       counterEl.classList.add('counter-fade-in');
     });
   }
 }
 
-// === 애니메이션 초기화 함수 ===
+const animationStates = new Map();
+
 function resetAnimations() {
   document.querySelectorAll('.section').forEach(el => {
     el.classList.remove('active');
   });
-  
-  // bg-zoom 섹션들의 상태를 완전히 리셋하여 재애니메이션 가능하게 함
   document.querySelectorAll('.bg-zoom').forEach(el => {
     el.classList.remove('active', 'stabilized', 'animate');
+    const id = el.id || el.dataset.section;
+    animationStates.delete(id);
   });
-  
   const intro = document.querySelector('.intro-container');
   if (intro) intro.classList.remove('not-active');
 }
 
-// === Trail Dot 함수 ===
+function forceAnimationCheck() {
+  const sections = document.querySelectorAll('.bg-zoom');
+  sections.forEach(section => {
+    const rect = section.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const isVisible = rect.top < windowHeight * 0.6 && rect.bottom > windowHeight * 0.4;
+
+    if (isVisible && !section.classList.contains('animate')) {
+      const id = section.id || section.dataset.section;
+      if (!animationStates.get(id)) {
+        section.classList.add('animate');
+        animationStates.set(id, true);
+        setTimeout(() => {
+          section.classList.remove('animate');
+          section.classList.add('stabilized');
+        }, 1200);
+      }
+    }
+  });
+}
+
 function createTrailDot(x, y) {
   if (!trailActive) return;
   const dot = document.createElement('div');
@@ -118,14 +131,12 @@ function createTrailDot(x, y) {
   setTimeout(() => dot.remove(), 600);
 }
 
-// === 마우스 트레일 지속 생성 함수 ===
 let trailInterval;
 let currentMouseX = 0;
 let currentMouseY = 0;
 
 function startContinuousTrail() {
   if (trailInterval) return;
-  
   trailInterval = setInterval(() => {
     if (trailActive) {
       createTrailDot(currentMouseX, currentMouseY);
@@ -140,17 +151,14 @@ function stopContinuousTrail() {
   }
 }
 
-// === 마우스 위치 추적 ===
 document.addEventListener('mousemove', (e) => {
   currentMouseX = e.clientX;
   currentMouseY = e.clientY;
-  
   if (trailActive) {
     createTrailDot(e.clientX, e.clientY);
   }
 });
 
-// === 암전 효과 함수 ===
 function createFadeOverlay() {
   const overlay = document.createElement('div');
   overlay.classList.add('fade-overlay');
@@ -158,7 +166,6 @@ function createFadeOverlay() {
   return overlay;
 }
 
-// === IntersectionObserver ===
 document.addEventListener("DOMContentLoaded", () => {
   const sections = document.querySelectorAll('.section');
   const introSection = document.querySelector('.intro-container');
@@ -168,7 +175,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const bodyEl = document.body;
   const resetTimers = new Map();
 
-  // === 초기 랜덤 텍스트 설정 ===
   selectNextEndingText();
   updateEndingText();
 
@@ -187,10 +193,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const id = target.id || target.dataset.section;
 
       if (entry.isIntersecting) {
-        // bg-zoom 애니메이션 로직 - stabilized 상태와 관계없이 항상 애니메이션 발동
         if (target.classList.contains('bg-zoom')) {
-          // 이미 animate 중이 아닐 때만 애니메이션 시작
-          if (!target.classList.contains('animate')) {
+          const currentState = animationStates.get(id);
+          if (!target.classList.contains('animate') && !currentState) {
+            animationStates.set(id, true);
             target.classList.add('animate');
             setTimeout(() => {
               target.classList.remove('animate');
@@ -208,12 +214,12 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         target.classList.remove('active');
 
-        // 섹션을 벗어날 때 stabilized 상태 해제하여 다음 진입 시 재애니메이션 가능하게 함
         if (target.classList.contains('bg-zoom')) {
           const timer = setTimeout(() => {
             target.classList.remove('stabilized');
+            animationStates.delete(id);
             resetTimers.delete(id);
-          }, 800);
+          }, 1200);
           resetTimers.set(id, timer);
         }
 
@@ -227,7 +233,6 @@ document.addEventListener("DOMContentLoaded", () => {
   sections.forEach(section => observer.observe(section));
   if (introSection) observer.observe(introSection);
 
-  // === Trail Observer ===
   if (endingSection) {
     const trailObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -236,14 +241,12 @@ document.addEventListener("DOMContentLoaded", () => {
             trailActive = true;
             startContinuousTrail();
           }, 5600);
-          
+
           if (againClickCount > 0) {
             if (!document.getElementById('again-counter')) {
               createCounterDisplay();
             }
-            
             updateCounter();
-            
             setTimeout(() => {
               resetAndAnimateCounter();
             }, 100);
@@ -256,44 +259,42 @@ document.addEventListener("DOMContentLoaded", () => {
             counterEl.style.filter = 'blur(5px)';
             counterEl.classList.remove('counter-fade-in');
           }
-          
           trailActive = false;
           stopContinuousTrail();
         }
       });
     }, { threshold: 0.5 });
-
     trailObserver.observe(endingSection);
   }
 
-  // === Again 버튼 클릭 시 (랜덤 텍스트 변경 포함) ===
+  let scrollTimeout;
+  document.querySelector('main').addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      forceAnimationCheck();
+    }, 150);
+  });
+
   againButton?.addEventListener('click', () => {
     againClickCount++;
     isFirstEndingEntry = true;
-    
-    // === 다음 랜덤 텍스트 선택 및 업데이트 ===
     selectNextEndingText();
-    
+
     if (againClickCount === 1 && !document.getElementById('again-counter')) {
       createCounterDisplay();
     }
-    
+
     const fadeOverlay = createFadeOverlay();
-    
     setTimeout(() => {
       fadeOverlay.classList.add('fade-in');
     }, 50);
-    
+
     setTimeout(() => {
       resetAnimations();
       trailActive = false;
       stopContinuousTrail();
-      
       document.querySelector('main').scrollTop = 0;
-      
-      // === 엔딩 텍스트 업데이트 (암전 중에 수행) ===
       updateEndingText();
-      
       const introSection = document.querySelector('.intro-container');
       if (introSection) {
         introSection.classList.remove('not-active');
@@ -301,23 +302,15 @@ document.addEventListener("DOMContentLoaded", () => {
           introSection.classList.add('active');
         }, 200);
       }
-      
     }, 1800);
-    
+
     setTimeout(() => {
       fadeOverlay.classList.remove('fade-in');
-      
-      // === 암전 해제 후 Observer 완전 재초기화 ===
       setTimeout(() => {
-        // 모든 bg-zoom 요소들이 새로 진입할 때 애니메이션이 발동되도록 강제 리셋
-        document.querySelectorAll('.bg-zoom').forEach(el => {
-          el.classList.remove('active', 'stabilized', 'animate');
-          // Observer 재등록으로 상태 초기화
-          observer.unobserve(el);
-          observer.observe(el);
-        });
-        
         fadeOverlay.remove();
+        setTimeout(() => {
+          forceAnimationCheck();
+        }, 200);
       }, 1800);
     }, 2200);
   });
