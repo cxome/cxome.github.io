@@ -4,7 +4,9 @@ A sensory-driven, scroll-based website crafted entirely with the help of AI.
 > 🗣 This README includes both **English and Korean** introductions.  
 > 🇰🇷 [Jump to the Korean version →](#-한국어)
 
-<!-- e.g., ![chrome section screenshot](path/to/image) -->
+<img width="1406" alt="Image" align="center" src="https://github.com/user-attachments/assets/79030506-e25f-41a4-a42a-5151735ae67a" />
+
+
 
 ---
 
@@ -65,8 +67,11 @@ Rather than assigning different features to each section, the focus is on **shar
 
 ## 🌌 Screenshots / Demo
 
-<!-- Insert full-page screenshots or a scroll-recorded GIF here -->
-<!-- e.g., ![chrome section screenshot](path/to/image) -->
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/627745bc-c5a3-47e6-8438-0dfc38f9556a" width="500"/>
+  <img src="https://github.com/user-attachments/assets/c861e0bd-0540-46be-8827-05a84fa06782" width="500"/>
+  <img src="https://github.com/user-attachments/assets/12c0aafd-03a2-41de-b07f-bb2038523ce5" width="500"/>
+</p>
 
 ---
 
@@ -96,7 +101,7 @@ Creative vision by [Your Name].
 
 AI의 도움만으로 구현한 감각 기반 스크롤 웹사이트.
 
-<!-- e.g., ![chrome section screenshot](path/to/image) -->
+<img width="1406" alt="Image" src="https://github.com/user-attachments/assets/79030506-e25f-41a4-a42a-5151735ae67a" />
 
 ---
 
@@ -155,8 +160,11 @@ AI의 도움만으로 구현한 감각 기반 스크롤 웹사이트.
 
 ## 🌌 스크린샷 / 데모
 
-<!-- 실제 이미지나 GIF가 들어갈 자리 -->
-<!-- 예: ![Chrome 섹션 이미지](./images/chrome.png) -->
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/627745bc-c5a3-47e6-8438-0dfc38f9556a" width="500"/>
+  <img src="https://github.com/user-attachments/assets/c861e0bd-0540-46be-8827-05a84fa06782" width="500"/>
+  <img src="https://github.com/user-attachments/assets/12c0aafd-03a2-41de-b07f-bb2038523ce5" width="500"/>
+</p>
 
 ---
 
