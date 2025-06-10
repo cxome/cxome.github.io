@@ -87,7 +87,7 @@ Rather than assigning different features to each section, the focus is on **shar
 ## 🤝 Credits
 
 **Designed, directed, and iterated** with the help of [ChatGPT](https://chat.openai.com/).  
-Creative vision by [Your Name].
+Creative vision by cxome(me)
 
 ---
 
