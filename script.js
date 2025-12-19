@@ -9,8 +9,8 @@ const failRetryBtn = document.getElementById("fail-retry-btn");
 const correctWordDisplay = document.getElementById("correct-word");
 
 // 상태 변수
-let validWords = new Set();
-let wordsList = [];
+let validWords = new Set();   // ✅ 입력 허용 단어(검사용)
+let answerWords = [];         // ✅ 정답 후보 단어(예: 100개)
 let ANSWER = "";
 
 let currentRow = 0;
@@ -18,22 +18,37 @@ let currentCol = 0;
 let resetInProgress = false;
 let inputLocked = false;
 
-// 단어 리스트 로드 및 정답 선택
+// ✅ 단어 리스트 로드: 입력허용(words.json) + 정답후보(answer_words.json) 분리
 async function loadWordList() {
   try {
-    const response = await fetch("words.json");
-    const data = await response.json();
-    wordsList = data.words.map(word => word.toUpperCase());
-    validWords = new Set(wordsList);
+    const [validRes, answerRes] = await Promise.all([
+      fetch("words.json"),
+      fetch("answer_words.json")
+    ]);
+
+    const validData = await validRes.json();
+    const answerData = await answerRes.json();
+
+    // ✅ words.json 형태가 배열이든 {words:[...]}든 둘 다 대응
+    const validArray = Array.isArray(validData) ? validData : validData.words;
+    const answerArray = Array.isArray(answerData) ? answerData : answerData.words;
+
+    const validUpper = validArray.map(w => w.toUpperCase());
+    const answerUpper = answerArray.map(w => w.toUpperCase());
+
+    validWords = new Set(validUpper);
+    answerWords = answerUpper;
+
     pickRandomAnswer();
   } catch (error) {
     console.error("단어 리스트를 불러오는 중 오류 발생:", error);
   }
 }
 
+// ✅ 정답은 answerWords에서만 뽑음
 function pickRandomAnswer() {
-  const index = Math.floor(Math.random() * wordsList.length);
-  ANSWER = wordsList[index];
+  const index = Math.floor(Math.random() * answerWords.length);
+  ANSWER = answerWords[index];
   console.log("정답:", ANSWER);
 }
 
@@ -112,6 +127,7 @@ function handleEnter() {
     .map(tile => tile.dataset.letter)
     .join("");
 
+  // ✅ 입력 허용 단어는 validWords로만 검사
   if (!validWords.has(guess)) {
     shakeRow(currentRow);
     return;
@@ -123,7 +139,7 @@ function handleEnter() {
   if (guess === ANSWER) {
     setTimeout(() => {
       if (!resetInProgress) showEndingModal();
-    }, 1800); // 5칸 × 300ms + 여유
+    }, 1800);
     return;
   }
 
