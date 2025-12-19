@@ -1,0 +1,290 @@
+/* 기본 레이아웃 */
+body {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(ellipse at top, #111 0%, #080808 100%);
+  color: #fff;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url('https://www.transparenttextures.com/patterns/fabric-of-squares.png');
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding-top: 30px;
+  box-sizing: border-box;
+}
+
+/* 헤더 */
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  font-family: 'Unica One', sans-serif;
+  font-size: 60px;
+  font-weight: normal;
+  letter-spacing: 6px;
+  color: #e8e8e8;
+  text-shadow: 0 0 12px rgba(255,255,255,0.3);
+  margin: 40px 0 50px;
+  animation: titleGlow 3s ease-in-out infinite alternate;
+  text-align: center;
+}
+
+@keyframes titleGlow {
+  from { text-shadow: 0 0 8px #888, 0 0 16px #aaa; }
+  to   { text-shadow: 0 0 12px #fff, 0 0 22px #ddd; }
+}
+
+/* 게임판 */
+#board {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 70px;
+  transform: scale(1.2);
+}
+
+.row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.tile {
+  width: 43px;
+  height: 43px;
+  border: 2px solid #3a3a3c;
+  background-color: #121213;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 23px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #fff;
+  transition: transform 0.3s ease-in-out;
+  transform-style: preserve-3d;
+}
+
+.tile.flip {
+  transform: rotateX(90deg);
+}
+
+.tile.correct {
+  background-color: #6aaa64;
+  border-color: #6aaa64;
+}
+
+.tile.present {
+  background-color: #c9b458;
+  border-color: #c9b458;
+}
+
+.tile.absent {
+  background-color: #3a3a3c;
+  border-color: #3a3a3c;
+}
+
+/* 키보드 */
+#keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 30px;
+  transform: scale(1.2);
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+}
+
+.key {
+  background-color: #818384;
+  border: none;
+  padding: 12px 9px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 12px;
+  color: #fff;
+  cursor: pointer;
+  text-transform: uppercase;
+  min-width: 36px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.key:hover {
+  background-color: #9aa0a6;
+  transform: scale(1.05);
+}
+
+.key.correct {
+  background-color: #6aaa64;
+}
+
+.key.present {
+  background-color: #c9b458;
+}
+
+.key.absent {
+  background-color: #3a3a3c;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.key.pressed {
+  transform: scale(0.95);
+  filter: brightness(1.2);
+}
+
+.wide-key {
+  min-width: 54px;
+}
+
+/* 흔들림 애니메이션 */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+  100% { transform: translateX(0); }
+}
+
+.tile.shake {
+  animation: shake 0.5s ease;
+}
+
+/* 모달 공통 */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #1c1c1e;
+  padding: 40px 60px;
+  border-radius: 16px;
+  text-align: center;
+  width: 320px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  animation: popUp 0.3s ease-out;
+}
+
+@keyframes popUp {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.icon-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  margin: 0 auto 15px;
+}
+
+.star-icon,
+.x-icon {
+  font-size: 32px;
+  color: #fff;
+}
+
+/* 성공 모달 스타일 */
+#ending-modal .icon-box {
+  background-color: #538d4e;
+}
+
+#ending-modal #retry-btn {
+  background-color: #6aaa64;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+#ending-modal #retry-btn:hover {
+  background-color: #4b8a48;
+}
+
+/* 실패 모달 스타일 */
+#fail-modal .icon-box {
+  background-color: #9d1c1c;
+}
+
+#fail-modal #fail-retry-btn {
+  background-color: #c04545;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+#fail-modal #fail-retry-btn:hover {
+  background-color: #a83232;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #fff;
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+.modal-subtitle {
+  font-size: 15px;
+  color: #d7dadc;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+/* 드래그 방지 */
+.title,
+.tile,
+.key,
+.modal-title,
+.modal-subtitle {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}

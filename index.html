@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wordle Infinity</title>
+
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Unica+One&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+
+    <!-- 헤더 -->
+    <header>
+      <h1 class="title">WORDLE INFINITY</h1>
+    </header>
+
+    <!-- 게임 보드 (6행 × 5열) -->
+    <div id="board">
+      <div class="row">
+        <div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div>
+      </div>
+      <div class="row">
+        <div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div>
+      </div>
+      <div class="row">
+        <div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div>
+      </div>
+      <div class="row">
+        <div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div>
+      </div>
+      <div class="row">
+        <div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div>
+      </div>
+      <div class="row">
+        <div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div>
+      </div>
+    </div>
+
+    <!-- 키보드 -->
+    <div id="keyboard">
+
+      <!-- 첫 줄 -->
+      <div class="keyboard-row">
+        <button class="key" data-key="Q">Q</button>
+        <button class="key" data-key="W">W</button>
+        <button class="key" data-key="E">E</button>
+        <button class="key" data-key="R">R</button>
+        <button class="key" data-key="T">T</button>
+        <button class="key" data-key="Y">Y</button>
+        <button class="key" data-key="U">U</button>
+        <button class="key" data-key="I">I</button>
+        <button class="key" data-key="O">O</button>
+        <button class="key" data-key="P">P</button>
+      </div>
+
+      <!-- 둘째 줄 -->
+      <div class="keyboard-row">
+        <button class="key" data-key="A">A</button>
+        <button class="key" data-key="S">S</button>
+        <button class="key" data-key="D">D</button>
+        <button class="key" data-key="F">F</button>
+        <button class="key" data-key="G">G</button>
+        <button class="key" data-key="H">H</button>
+        <button class="key" data-key="J">J</button>
+        <button class="key" data-key="K">K</button>
+        <button class="key" data-key="L">L</button>
+      </div>
+
+      <!-- 셋째 줄 -->
+      <div class="keyboard-row">
+        <button class="key wide-key" data-key="ENTER">ENTER</button>
+        <button class="key" data-key="Z">Z</button>
+        <button class="key" data-key="X">X</button>
+        <button class="key" data-key="C">C</button>
+        <button class="key" data-key="V">V</button>
+        <button class="key" data-key="B">B</button>
+        <button class="key" data-key="N">N</button>
+        <button class="key" data-key="M">M</button>
+        <button class="key wide-key" data-key="BACKSPACE">⌫</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 성공 모달 -->
+  <div id="ending-modal" class="modal">
+    <div class="modal-content">
+      <div class="icon-box">
+        <div class="star-icon">★</div>
+      </div>
+      <h1 class="modal-title">Congratulations!</h1>
+      <p class="modal-subtitle">
+        What a nice brain..<br>You guessed the word!
+      </p>
+      <button id="retry-btn">Play Again</button>
+    </div>
+  </div>
+
+  <!-- 실패 모달 -->
+  <div id="fail-modal" class="modal">
+    <div class="modal-content">
+      <div class="icon-box">
+        <div class="x-icon">✖</div>
+      </div>
+      <h1 class="modal-title">Better luck next time!</h1>
+      <p class="modal-subtitle">
+        The correct word was:<br><span id="correct-word"></span>
+      </p>
+      <button id="fail-retry-btn">Play Again</button>
+    </div>
+  </div>
+
+  <!-- 스크립트 -->
+  <script src="script.js"></script>
+</body>
+</html>
